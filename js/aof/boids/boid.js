@@ -12,7 +12,8 @@ var Boid = Particle.extend({
 		this.flock = flock;
 		this.rotation = Math.random() * Math.PI * 2;
 		this.forces = [];
-		this.forces = [new Vector(), new Vector(), new Vector(), new Vector(), new Vector(), new Vector(), new Vector(), new Vector()];
+		this.forces = [new Vector(), new Vector(), new Vector(), new Vector(),
+                        new Vector(), new Vector(), new Vector(), new Vector()];
 		this.rebuild();
 	},
 
