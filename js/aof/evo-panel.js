@@ -142,15 +142,37 @@ function EvoPanel() {
 				/*
 				 * TODO: Replace this with real crossover
 				 * The raw DNA is just an array of floats [0,1]
-				 * Use that to fill in the childDNA with the right values
+				 * Use that to fill in the child DNA with the right values
 				 */
 				var childDNA = app.population.createDNA();
-				for (var j = 0; j < childDNA.values.length; j++) {
-					childDNA.values[j] = Math.random();
+
+				var cDNA0 = rawDNA0;
+				var cDNA1 = rawDNA1;
+
+				var xover = Math.floor((Math.random() * rawDNA0.length)+0);
+				for (var iter = xover; iter < rawDNA0.length; iter++){
+					var temp;
+					temp = cDNA0[iter];
+					cDNA0[iter] = cDNA1[iter];
+					cDNA1[iter] = temp;
 				}
-				
+
+				for (var j = 0; j < childDNA.values.length; j++) {
+					var choose = Math.floor((Math.random()*10)+1);
+					if(choose > 5){
+						childDNA[j] = cDNA1[j];
+					}else{
+						childDNA[j] = cDNA0[j];
+					}
+
+					// if(cDNA0[j] > cDNA1[j]){
+					// 	childDNA[j] = cDNA0[j];
+					// }else{
+					// 	childDNA[j] = cDNA1[j];
+					// }
+
+				}
 				nextGeneration[i] = app.population.dnaToIndividual(childDNA);
-			
 			}
 
 			break;
@@ -179,12 +201,33 @@ function EvoPanel() {
 		 * members of the population. By default, the population is sorted
 		 * by food collected, then the top three are selected as "winners".
 		 */
+		 
 		var sorted = app.population.individuals.sort(function(a, b) {
 			return b.food - a.food;
+
 		});
+
+		var wings = app.population.individuals.sort(function(a, b){
+			if(a.wingWidth+a.wingLength > b.wingWidth+b.wingLength){
+				return a;
+			}else{
+				return b;
+			}
+		});
+
+		var pow = app.population.individuals.sort(function(a,b){
+			if(a.power+a.flapRate > b.power+b.flapRate){
+				return a;
+			}else{
+				return b;
+			}
+		});
+
 		for (var i = 0; i < 3; i++) {
 			app.evoPanel.addToWinners(sorted[i], i);
 		}
+		app.evoPanel.addToWinners(wings[3], 3);
+		app.evoPanel.addToWinners(pow[4], 4);
 	});
 
 }
@@ -205,4 +248,3 @@ EvoPanel.prototype.addToWinners = function(individual, index) {
 	});
 	this.winnerSlots[index].individual = individual;
 };
-

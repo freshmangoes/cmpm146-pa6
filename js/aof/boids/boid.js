@@ -113,8 +113,10 @@ var Boid = Particle.extend({
 		*/
 
 		// EXAMPLE_WANDER: For example, this is a force that tells them to wander around
-		this.forces[5].mult(0);
-		this.forces[5].setToPolar(160, 20 * utilities.noise(this.id, t.current * .2));
+		// this.forces[5].mult(0);
+		// this.forces[5].setToPolar(160, 20 * utilities.noise(this.id, t.current * .2));
+
+		this.forces[5].mult(-2 * this.flock.dna.values[17]);
 
 		// EXAMPLE_FOOD: This example force searches for food directly ahead, and,
 		// if found, exerts a lunging force forward
@@ -126,19 +128,23 @@ var Boid = Particle.extend({
 		var total = 0;
 		for (var i = 0; i < 20; i++) {
 
-			sampleSpot.setToAddMultiple(this, 1, this.v, i * .012 + .005);
+			sampleSpot.setToAddMultiple(this, 1.6, this.v, i * .012 + .0005);
 			var amt = environment.getFoodAt(sampleSpot);
 			total += amt;
 		}
-		this.forces[6].mult(200 * total);
+		this.forces[6].mult(400 * total);
 
 		// EXAMPLE_MOUSE: Try making the boids CHASE or RUN FROM your mouse movement
-		// Try controlling fearfulness/curiosity about 
+		// Try controlling fearfulness/curiosity about
 		// the mouse with one of the unused DNA genes
-		
-		//this.forces[7].setToDifference(this, app.mouse);
+
+		// this.forces[7].setToDifference(this, app.mouse);
 		// Reverse the behavior:
-		//this.forces[7].mult(-1);
+		// this.forces[7].mult(-1.3);
+
+		this.forces[7].mult(((Math.random()*10)-1) * this.flock.dna.values[14]);
+
+		// this.forces[7].mult(this.flock.dna.values[14]*7);
 
 		// Leave this line in!
 		this._super(t);
@@ -192,11 +198,12 @@ var Boid = Particle.extend({
 
 		// Draw the body
 		g.noStroke();
-		g.fill(this.flock.hue0, 1, .9);
+		g.fill(this.flock.hue0, this.flock.dna.values[7], this.flock.dna.values[8]);
 		g.beginShape(g.TRIANGLE_FAN);
-		g.vertex(this.length * .4, 0);
+		// g.vertex(this.length * .4, 0);
+		g.vertex(this.length * this.flock.dna.values[6], 0);
 		g.vertex(-wy, wx);
-		g.vertex(-this.length * .6, 0);
+		g.vertex(-this.length * this.flock.dna.values[8], 0);
 		g.vertex(-wy, -wx);
 		g.endShape();
 
